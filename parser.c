@@ -11,6 +11,8 @@
        | float
  Function_ -> main() { D B } 
             | id() { D B }
+ A -> = E 
+ 	 | epsilon
  B -> C B 
       | epsilon
  C -> id = E ; 
@@ -51,6 +53,7 @@ void S_();
 void Function();
 void Type();
 void Function_();
+void A();
 void B();
 void C();
 void D();
@@ -189,6 +192,13 @@ void T_(){
   }
 }
 
+void A(){
+	if(lookahead == OP_ATRIB){
+		match(OP_ATRIB);
+		E();
+	}
+}
+
 void D(){
 	if(lookahead == INT || lookahead == FLOAT || lookahead == VOID){
 		Type();
@@ -199,6 +209,7 @@ void D(){
 }
 void L(){
 	match(ID);
+	A();
 	L_();
 }
 
@@ -242,4 +253,3 @@ int main(int argc, char**argv)
     return 0;
   }
 }
-
