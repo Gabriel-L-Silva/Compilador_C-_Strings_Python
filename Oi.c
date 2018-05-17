@@ -1,2 +1,0 @@
-Tudo bem?
-Não.
