@@ -22,6 +22,7 @@
  D -> Type L ; D
  	| epsilon
  E -> TE'
+      | P
  E'-> +TE' 
       | epsilon
  T -> FT'
@@ -33,6 +34,9 @@
  L -> id L_
  L_ -> , L
  	 | epsilon
+ P -> " N " #####TODO######
+ N -> id N  #####TODO######
+      | epsilon
 
  A saida do analisador apresenta o total de linhas processadas e uma mensagem de erro ou sucesso. 
  Atualmente, nao ha controle sobre a coluna e a linha em que o erro foi encontrado.
@@ -64,6 +68,8 @@ void E_();
 void T_();
 void L();
 void L_();
+void P();//#####TODO######
+void N();//#####TODO######
 
 void match(int t)
 {
@@ -218,6 +224,21 @@ void L_(){
 		match(VIRG);
 		L();
 	}
+}
+
+void P(){ // ERRADO, DESCOBRIR COMO REPRESENTAR " E '
+  if(lookahead == ASPAS){
+    match(ASPAS);
+    N();
+    match(ASPAS);
+  }
+}
+
+void N(){
+  if(lookahead == ID){
+    match(ID);
+    N();
+  }
 }
 
 /*******************************************************************************************
