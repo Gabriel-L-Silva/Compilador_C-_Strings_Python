@@ -6,6 +6,5 @@ TODO:
 DOING
   
 DONE:
-  -Construção de strings;
-  -Uso de slices de strings;
-  
+  Construção de strings;
+  Uso de slices de strings;
