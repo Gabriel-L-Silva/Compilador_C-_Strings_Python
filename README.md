@@ -5,5 +5,6 @@ TODO:
   
 DOING:
   Gramática LL(1) para implementar.
+  
 DONE:
   Contador de linha do erro.
