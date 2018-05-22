@@ -170,7 +170,7 @@ void E(){
     T();
     E_();
   }
-  // Chama P que consome uma string
+  // Chama P que consome um string
   if (lookahead == STRING){
     P();
   }
