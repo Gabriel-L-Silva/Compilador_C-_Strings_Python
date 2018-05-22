@@ -176,3 +176,7 @@ int lex()
   else
     return FIM;
 }
+
+int conta_linha(){
+	return lines;
+}

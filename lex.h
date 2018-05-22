@@ -16,5 +16,6 @@ extern char *terminalName[];
 extern FILE *fin;
 
 int lex();
+int conta_linha();
 
 #endif

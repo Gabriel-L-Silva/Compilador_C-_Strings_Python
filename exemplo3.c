@@ -4,12 +4,13 @@ void main()
     c, d;
 
    a = 10;
-   b = '3';
+   b = "3";
    c = 3.14;
    d = "abacaxi";
-   while (a!=0 && b>=c){
-     c = (a+b)/2;
-     a = a || (b | 1);
-     b = b*b - 1;
+   while (a){
+     a = a[2:0];
+     c = (a+b)*2;
+     a = a + (b + 1);
+     b = b*b + 1;
    }
 }

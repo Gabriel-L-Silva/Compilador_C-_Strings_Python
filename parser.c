@@ -23,6 +23,7 @@
  	| epsilon
  E -> TE'
       | P
+      | M
  E'-> +TE' 
       | epsilon
  T -> FT'
@@ -33,11 +34,11 @@
       | num
  L -> id L_
  L_ -> , L
- 	 | epsilon
- P -> " N " #####TODO######
- N -> id N  #####TODO######
+ 	    | epsilon
+ P -> string        #####TODO######
+ M -> id [ M_ : M_] #####TODO######
+ M_-> num           #####TODO######
       | epsilon
-
  A saida do analisador apresenta o total de linhas processadas e uma mensagem de erro ou sucesso. 
  Atualmente, nao ha controle sobre a coluna e a linha em que o erro foi encontrado.
 */
@@ -49,7 +50,9 @@
 
 /* variaveis globais */
 int lookahead;
+int linha = 1;
 FILE *fin;
+
 
 int lex();
 void S();
@@ -69,7 +72,8 @@ void T_();
 void L();
 void L_();
 void P();//#####TODO######
-void N();//#####TODO######
+void M();//#####TODO######
+void M_();//#####TODO######
 
 void match(int t)
 {
@@ -77,7 +81,7 @@ void match(int t)
     lookahead=lex();
   }
   else{
-    printf("\nErro: token %s (cod=%d) esperado.## Encontrado \"%s\" ##\n", terminalName[t], t, lexema);
+    printf("\nErro linha #%d: token %s (cod=%d) esperado.## Encontrado \"%s\" ##\n", conta_linha(), terminalName[t], t, lexema);
     exit(1);
   }
 }
@@ -157,12 +161,23 @@ void C(){
     B();
     match(FECHA_CHAVES);
   }
+  
 }
 
 
 void E(){
-  T();
-  E_();
+  if (lookahead == ABRE_PARENT || lookahead == NUM || lookahead == ID){
+    T();
+    E_();
+  }
+  // Chama P que consome uma string
+  if (lookahead == STRING){
+    P();
+  }
+  // Chama M que comsome a função de slice de strings
+  if (lookahead == ABRE_COLC){
+    M();
+  }
 }
 
 void T(){
@@ -226,21 +241,26 @@ void L_(){
 	}
 }
 
-void P(){ // ERRADO, DESCOBRIR COMO REPRESENTAR " E '
-  if(lookahead == ASPAS){
-    match(ASPAS);
-    N();
-    match(ASPAS);
-  }
+//Implementação
+void P(){ // Consome uma string; String representa "cadeia tamanho variável"
+  match(STRING);
 }
 
-void N(){
-  if(lookahead == ID){
-    match(ID);
-    N();
-  }
+// Consome [:]
+void M(){
+  match(ABRE_COLC);
+  M_();
+  match(DOT_DOT);
+  M_();
+  match(FECHA_COLC);
 }
 
+// Consome num
+void M_(){ 
+  if(lookahead == NUM){
+    match(NUM);
+  }
+}
 /*******************************************************************************************
  parser(): 
  - efetua o processamento do automato com pilha AP
