@@ -17,5 +17,6 @@ extern FILE *fin;
 
 int lex();
 int conta_linhas();
+int conta_colunas();
 
 #endif

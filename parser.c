@@ -96,19 +96,17 @@ void match(int t)
     lookahead=lex();
   }
   else{
-    printf("\nErro Linha #%d: token %s (cod=%d) esperado.## Encontrado \"%s\" ##\n", conta_linhas(), terminalName[t], t, lexema);
+    printf("\nErro Linha #%d Coluna #%d: token %s (cod=%d) esperado.## Encontrado \"%s\" ##\n", conta_linhas(), conta_colunas(), terminalName[t], t, lexema);
     exit(1);
   }
 }
 
 void S(){
-  printf("S\n");
   Function();
   S_();
 }
 
 void S_(){
-  printf("S_\n");
   if(lookahead==INT || lookahead==FLOAT || lookahead==VOID){
     Function();
     S_();
@@ -116,13 +114,11 @@ void S_(){
 }
 
 void Function(){
-  printf("Function\n");
   Type();
   Function_();
 }
 
 void Type(){
-  printf("Type\n");
   if(lookahead==INT){
     match(INT);
   }
@@ -138,7 +134,6 @@ void Type(){
             | id() { D B }
 */
 void Function_(){
-  printf("Function_\n");
   if(lookahead == MAIN){
     match(MAIN);
     match(ABRE_PARENT);
@@ -146,7 +141,6 @@ void Function_(){
     match(ABRE_CHAVES);
     D();
     B();
-    printf("Cheguei\n");
     match(FECHA_CHAVES);
   }
   else{
@@ -163,7 +157,6 @@ void Function_(){
       | epsilon */
 void D()
 {
-  printf("D\n");
   if(lookahead==INT || lookahead==FLOAT){
     Type();
     L();
@@ -174,7 +167,6 @@ void D()
 /* L  -> id L_ */
 void L()
 {
-  printf("L\n");
   match(ID);
   L_();
 }
@@ -182,14 +174,12 @@ void L()
         | epsilon */
 void L_()
 {
-  printf("L_\n");
   if (lookahead==VIRG){
     match(VIRG);
     L();
   }
 }
 void B(){
-  printf("B\n");
   if(lookahead==ID || lookahead==WHILE || lookahead==ABRE_CHAVES){
     C();
     B();
@@ -197,7 +187,6 @@ void B(){
 }
 
 void C(){
-  printf("C\n");
   if(lookahead==ID){
     match(ID);
     match(OP_ATRIB);
@@ -226,7 +215,6 @@ void C(){
 */
 
 void E(){
-  printf("E\n");
   if(lookahead==ABRE_PARENT){
     match(ABRE_PARENT);
     E();
@@ -254,7 +242,6 @@ void E(){
       | epsilon
 */
 void Z(){
-  printf("Z\n");
   if(lookahead==OP_MULT){
     match(OP_MULT);
     F();
@@ -274,12 +261,10 @@ void Z(){
 }
 
 void T(){
-  printf("T\n");
   F();
   T_();
 }
 void E_(){
-  printf("E_\n");
   if(lookahead==OP_ADIT){
     match(OP_ADIT);
     T();
@@ -287,7 +272,6 @@ void E_(){
   }
 }
 void F(){
-  printf("F\n");
   if(lookahead==ABRE_PARENT){
     match(ABRE_PARENT);
     E();
@@ -302,7 +286,6 @@ void F(){
   }
 }
 void T_(){
-  printf("T_\n");
   if(lookahead==OP_MULT){
     match(OP_MULT);
     F();
@@ -322,14 +305,12 @@ void T_(){
 */
 
 void M(){
-  printf("M\n");
   match(ID);
   match(ABRE_COLC);
   M_();
 }
 
 void M_(){
-  printf("M_\n");
   if(lookahead==NUM){
     match(NUM);
     X();
@@ -341,7 +322,6 @@ void M_(){
 }
 
 void X(){
-  printf("X\n");
   if(lookahead==DOT_DOT){
     match(DOT_DOT);
     Y();
@@ -349,7 +329,6 @@ void X(){
 }
 
 void Y(){
-  printf("Y\n");
   if(lookahead==NUM){
     match(NUM);
   }
@@ -377,7 +356,7 @@ int main(int argc, char**argv)
     return 1;
   }
   else{
-    printf("\nAnalisando lexica e sintaticamente o programa: %s", argv[1]);
+    printf("\nAnalisando lexica e sintaticamente o programa: %s\n", argv[1]);
     fin=fopen(argv[1], "r");
     if(!fin){
       printf("\nProblema na abertura do programa %s\n", argv[1]);

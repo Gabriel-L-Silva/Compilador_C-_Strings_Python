@@ -12,6 +12,7 @@
 char lexema[81]; /* armazena a palavra processada pelo automato */
 int ilexema;    /* indice usado para atualizar lexema */
 int lines=1;       /* contador de linhas processadas */
+int col = 1;      /*contador de colunas processadas*/
 char c;          /* armazena caracter lido da entrada */
 
 char symbols[] = { /* alfabeto de entrada em ordem crescente de codigo ascii */
@@ -88,8 +89,10 @@ char nextSymbol (FILE* fin)
     lexema[ilexema++]=c;
   }
   else{
-    if(c=='\n')
+    if(c=='\n'){
       lines++;
+      col = 1;
+    }
   }
   
   if(isdigit(c))
@@ -158,6 +161,7 @@ int lex()
   while((next != FIM) && (prox_estado=delta[estado_atual][next]) != -1){
     estado_atual=prox_estado;
     next=nextSymbol(fin);
+    col++;
   }
 
   if(next!=FIM){
@@ -179,4 +183,8 @@ int lex()
 
 int conta_linhas(){
   return lines;
+}
+
+int conta_colunas(){
+  return col;
 }

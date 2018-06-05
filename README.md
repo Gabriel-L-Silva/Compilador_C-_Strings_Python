@@ -4,8 +4,9 @@ Alunos : Daniel Carvalho de Oliveira, Gabriel Lucas da Silva, Ivan de Abreu Lima
 TODO:
   
 DOING
-  Contador de coluna errada;
+
 DONE:
+  Contador de coluna errada;
   Construção de strings;
   Uso de slices de strings;
   Contador de linha errada;
