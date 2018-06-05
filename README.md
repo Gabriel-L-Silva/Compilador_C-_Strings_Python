@@ -8,3 +8,4 @@ DOING
 DONE:
   Construção de strings;
   Uso de slices de strings;
+  Contador de linha errada;
