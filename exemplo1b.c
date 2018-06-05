@@ -5,8 +5,8 @@ int f()
 }
 void main()
 {
-  int a, b;
-  float a,a,a,a,c;
+  int a,b,c;
+  double a;
   
    a = 10;
    b = 3;

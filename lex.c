@@ -177,6 +177,6 @@ int lex()
     return FIM;
 }
 
-int conta_linha(){
-	return lines;
+int conta_linhas(){
+  return lines;
 }

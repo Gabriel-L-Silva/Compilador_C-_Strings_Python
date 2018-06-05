@@ -11,19 +11,31 @@
        | float
  Function_ -> main() { D B } 
             | id() { D B }
- A -> = E 
- 	 | epsilon
+ D -> Type L ; D 
+      | epsilon
+
+//  L -> id , L | id 
+//  nao esta na LL(1), entao mudamos L para o seguinte:
+
+ L  -> id L_
+ L_ -> , L 
+     | epsilon
+ 
  B -> C B 
       | epsilon
- C -> id = E ; 
+ C -> id = E;    EDITADO
       | while (E) C 
       | { B }
+ E -> (E)T'E'
+      | id Z
+      | num T'E'
+      | string
 
- D -> Type L ; D
- 	| epsilon
- E -> TE'
-      | P
-      | M
+ Z -> *FT'E'
+      | +TE'
+      | [M_]
+      | epsilon
+
  E'-> +TE' 
       | epsilon
  T -> FT'
@@ -32,13 +44,17 @@
  F -> (E) 
       | id 
       | num
- L -> id L_
- L_ -> , L
- 	    | epsilon
- P -> string        #####TODO######
- M -> id [ M_ : M_] #####TODO######
- M_-> num           #####TODO######
-      | epsilon
+
+
+ M  -> id[M_]
+
+ M_ -> num X
+       | : Y
+ X  -> : Y
+       | epsilon
+ Y  -> num
+       | epsilon
+
  A saida do analisador apresenta o total de linhas processadas e uma mensagem de erro ou sucesso. 
  Atualmente, nao ha controle sobre a coluna e a linha em que o erro foi encontrado.
 */
@@ -50,9 +66,7 @@
 
 /* variaveis globais */
 int lookahead;
-int linha = 1;
 FILE *fin;
-
 
 int lex();
 void S();
@@ -60,20 +74,21 @@ void S_();
 void Function();
 void Type();
 void Function_();
-void A();
 void B();
 void C();
-void D();
 void E();
 void T();
 void F();
 void E_();
 void T_();
+void D();
 void L();
 void L_();
-void P();//#####TODO######
-void M();//#####TODO######
-void M_();//#####TODO######
+void M();
+void M_();
+void X();
+void Y();
+void Z();
 
 void match(int t)
 {
@@ -81,17 +96,19 @@ void match(int t)
     lookahead=lex();
   }
   else{
-    printf("\nErro linha #%d: token %s (cod=%d) esperado.## Encontrado \"%s\" ##\n", conta_linha(), terminalName[t], t, lexema);
+    printf("\nErro Linha #%d: token %s (cod=%d) esperado.## Encontrado \"%s\" ##\n", conta_linhas(), terminalName[t], t, lexema);
     exit(1);
   }
 }
 
 void S(){
+  printf("S\n");
   Function();
   S_();
 }
 
 void S_(){
+  printf("S_\n");
   if(lookahead==INT || lookahead==FLOAT || lookahead==VOID){
     Function();
     S_();
@@ -99,11 +116,13 @@ void S_(){
 }
 
 void Function(){
+  printf("Function\n");
   Type();
   Function_();
 }
 
-void Type(){  
+void Type(){
+  printf("Type\n");
   if(lookahead==INT){
     match(INT);
   }
@@ -114,8 +133,12 @@ void Type(){
     match(VOID);
   }
 }
-
+/*
+ Function_ -> main() { D B } 
+            | id() { D B }
+*/
 void Function_(){
+  printf("Function_\n");
   if(lookahead == MAIN){
     match(MAIN);
     match(ABRE_PARENT);
@@ -123,6 +146,7 @@ void Function_(){
     match(ABRE_CHAVES);
     D();
     B();
+    printf("Cheguei\n");
     match(FECHA_CHAVES);
   }
   else{
@@ -135,14 +159,45 @@ void Function_(){
     match(FECHA_CHAVES);
   }
 }
-
+/* D -> Type L ; D 
+      | epsilon */
+void D()
+{
+  printf("D\n");
+  if(lookahead==INT || lookahead==FLOAT){
+    Type();
+    L();
+    match(PONTO_VIRG);
+    D();
+  }
+}
+/* L  -> id L_ */
+void L()
+{
+  printf("L\n");
+  match(ID);
+  L_();
+}
+/*  L_ -> , L 
+        | epsilon */
+void L_()
+{
+  printf("L_\n");
+  if (lookahead==VIRG){
+    match(VIRG);
+    L();
+  }
+}
 void B(){
+  printf("B\n");
   if(lookahead==ID || lookahead==WHILE || lookahead==ABRE_CHAVES){
     C();
     B();
   }
 }
+
 void C(){
+  printf("C\n");
   if(lookahead==ID){
     match(ID);
     match(OP_ATRIB);
@@ -161,30 +216,70 @@ void C(){
     B();
     match(FECHA_CHAVES);
   }
-  
 }
 
+/*
+ E -> (E)T'E'
+      | id Z
+      | num T'E'
+      | string
+*/
 
 void E(){
-  if (lookahead == ABRE_PARENT || lookahead == NUM || lookahead == ID){
-    T();
+  printf("E\n");
+  if(lookahead==ABRE_PARENT){
+    match(ABRE_PARENT);
+    E();
+    match(FECHA_PARENT);
+    T_();
     E_();
   }
-  // Chama P que consome um string
-  if (lookahead == STRING){
-    P();
+  else if(lookahead==ID){
+    match(ID);
+    Z();
   }
-  // Chama M que comsome a função de slice de strings
-  if (lookahead == ABRE_COLC){
-    M();
+  else if(lookahead==NUM){
+    match(NUM);
+    T_();
+    E_();
+  }
+  else/*(lookahead==STRING)*/{
+    match(STRING);
+  }
+}
+/* 
+ Z -> *FT'E'
+      | +TE'
+      | [M_]
+      | epsilon
+*/
+void Z(){
+  printf("Z\n");
+  if(lookahead==OP_MULT){
+    match(OP_MULT);
+    F();
+    T_();
+    E_();
+  }
+  if(lookahead==ABRE_COLC){
+    match(ABRE_COLC);
+    M_();
+    match(FECHA_COLC);
+  }
+  if(lookahead==OP_ADIT){
+    match(OP_ADIT);
+    T();
+    E_();
   }
 }
 
 void T(){
+  printf("T\n");
   F();
   T_();
 }
 void E_(){
+  printf("E_\n");
   if(lookahead==OP_ADIT){
     match(OP_ADIT);
     T();
@@ -192,6 +287,7 @@ void E_(){
   }
 }
 void F(){
+  printf("F\n");
   if(lookahead==ABRE_PARENT){
     match(ABRE_PARENT);
     E();
@@ -206,6 +302,7 @@ void F(){
   }
 }
 void T_(){
+  printf("T_\n");
   if(lookahead==OP_MULT){
     match(OP_MULT);
     F();
@@ -213,54 +310,51 @@ void T_(){
   }
 }
 
-void A(){
-	if(lookahead == OP_ATRIB){
-		match(OP_ATRIB);
-		E();
-	}
-}
+/*
+ M  -> id[M_]
 
-void D(){
-	if(lookahead == INT || lookahead == FLOAT || lookahead == VOID){
-		Type();
-		L();
-		match(PONTO_VIRG);
-		D();
-	}
-}
-void L(){
-	match(ID);
-	A();
-	L_();
-}
+ M_ -> num X
+       | : Y
+ X  -> : Y
+       | epsilon
+ Y  -> num
+       | epsilon
+*/
 
-void L_(){
-	if(lookahead == VIRG){
-		match(VIRG);
-		L();
-	}
-}
-
-//Implementação
-void P(){ // Consome uma string; String representa "cadeia tamanho variável"
-  match(STRING);
-}
-
-// Consome [:]
 void M(){
+  printf("M\n");
+  match(ID);
   match(ABRE_COLC);
   M_();
-  match(DOT_DOT);
-  M_();
-  match(FECHA_COLC);
 }
 
-// Consome num
-void M_(){ 
-  if(lookahead == NUM){
+void M_(){
+  printf("M_\n");
+  if(lookahead==NUM){
+    match(NUM);
+    X();
+  }
+  else/*(lookahead==DOT_DOT)*/{
+    match(DOT_DOT);
+    Y();
+  }
+}
+
+void X(){
+  printf("X\n");
+  if(lookahead==DOT_DOT){
+    match(DOT_DOT);
+    Y();
+  }
+}
+
+void Y(){
+  printf("Y\n");
+  if(lookahead==NUM){
     match(NUM);
   }
 }
+
 /*******************************************************************************************
  parser(): 
  - efetua o processamento do automato com pilha AP
@@ -294,3 +388,4 @@ int main(int argc, char**argv)
     return 0;
   }
 }
+
