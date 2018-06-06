@@ -5,6 +5,7 @@ TODO:
   
 DOING
   Contador de coluna errada;
+  
 DONE:
   Construção de strings;
   Uso de slices de strings;
