@@ -5,10 +5,10 @@ TODO:
   
 DOING:
 
-  Contador de coluna do erro.
+    Contador de coluna do erro.
   
 DONE:
 
-  Contador de linha do erro.
+    Contador de linha do erro.
   
-  Gramática LL(1) para implementar.
+    Gramática LL(1) para implementar.
