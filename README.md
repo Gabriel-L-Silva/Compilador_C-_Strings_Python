@@ -1,13 +1,13 @@
 # LFA-Trabson
 Alunos : Daniel Carvalho de Oliveira, Gabriel Lucas da Silva, Vinícius Bruschi Carneiro. 
 
-TODO:
+##TODO:
   
-DOING:
+##DOING:
 
     Contador de coluna do erro.
   
-DONE:
+##DONE:
 
     Contador de linha do erro.
   
