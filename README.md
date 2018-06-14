@@ -1,10 +1,11 @@
 # LFA-Trabson
-Alunos : Daniel Carvalho de Oliveira, Gabriel Lucas da Silva, Ivan de Abreu Lima Junior, Vinícius Bruschi Carneiro. 
+Alunos : Daniel Carvalho de Oliveira, Gabriel Lucas da Silva, Vinícius Bruschi Carneiro. 
 
 TODO:
   
 DOING:
-  Gramática LL(1) para implementar.
-  
+  Contador de coluna do erro.
 DONE:
   Contador de linha do erro.
+  
+  Gramática LL(1) para implementar.
